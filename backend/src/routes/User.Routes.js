@@ -5,7 +5,7 @@ const router = Router();
 import {
   registro,
   login,
-  Logut,
+  logout,
   profile,
 } from "../controllers/user.controllers.js";
 
@@ -19,7 +19,7 @@ router.post("/register", validateSchema(registerSchema), registro);
 
 router.post("/login", validateSchema(loginSchema), login);
 
-router.post("/cierre", Logut);
+router.post("/logout", logout);
 
 router.get("/profile", authRequired, profile);
 

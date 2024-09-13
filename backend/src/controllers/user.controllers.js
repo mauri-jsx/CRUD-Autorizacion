@@ -7,7 +7,7 @@ export const registro = async (req, res) => {
     const { name, email, password } = req.body;
     const userFound = await User.findOne({ email });
     if (userFound) {
-      return res.status(400).send(["El usuario ya existe"]);
+      return res.status(400).json({ message: "El usuario ya existe" });
     }
     const passwordHash = await bcrypt.hash(password, 10);
     const newUser = new User({
@@ -18,7 +18,7 @@ export const registro = async (req, res) => {
     const userSaved = await newUser.save();
     const token = await createAccessToken({ id: userSaved._id });
     res.cookie("token", token);
-    res.json({
+    res.status(201).json({
       _id: userSaved._id,
       name: userSaved.name,
       email: userSaved.email,
@@ -27,7 +27,7 @@ export const registro = async (req, res) => {
     });
   } catch (error) {
     console.error("Error al registrar usuario:", error);
-    res.status(500).send("Error al registrar usuario");
+    res.status(500).json({ message: "Error al registrar usuario" });
   }
 };
 
@@ -36,15 +36,15 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
     const userFound = await User.findOne({ email });
     if (!userFound) {
-      return res.status(400).send("Usuario no encontrado");
+      return res.status(400).json({ message: "Usuario no encontrado" });
     }
-    const IsMatch = await bcrypt.compare(password, userFound.password);
-    if (!IsMatch) {
-      return res.status(400).send("Contraseña incorrecta");
+    const isMatch = await bcrypt.compare(password, userFound.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Contraseña incorrecta" });
     }
     const token = await createAccessToken({ id: userFound._id });
     res.cookie("token", token);
-    res.json({
+    res.status(200).json({
       _id: userFound._id,
       name: userFound.name,
       email: userFound.email,
@@ -52,28 +52,33 @@ export const login = async (req, res) => {
       updatedAt: userFound.updatedAt,
     });
   } catch (error) {
-    console.error("Error al registrar usuario:", error);
-    res.status(500).send("Error al registrar usuario");
+    console.error("Error al iniciar sesión:", error);
+    res.status(500).json({ message: "Error al iniciar sesión" });
   }
 };
 
-export const Logut = (req, res) => {
+export const logout = (req, res) => {
   res.cookie("token", "", {
     expires: new Date(0),
   });
-  return res.status(200).send("Cierre de sesion exitoso");
+  res.status(200).json({ message: "Cierre de sesión exitoso" });
 };
 
 export const profile = async (req, res) => {
-  const UserFoun = await User.findById(req.user.id);
-  if (!UserFoun) {
-    return res.status(400).send("Usuario no encontrado");
+  try {
+    const userFound = await User.findById(req.user.id);
+    if (!userFound) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    res.status(200).json({
+      _id: userFound._id,
+      name: userFound.name,
+      email: userFound.email,
+      createdAt: userFound.createdAt,
+      updatedAt: userFound.updatedAt,
+    });
+  } catch (error) {
+    console.error("Error al obtener perfil:", error);
+    res.status(500).json({ message: "Error al obtener perfil" });
   }
-  return res.json({
-    _id: UserFoun._id,
-    name: UserFoun.name,
-    email: UserFoun.email,
-    createdAt: UserFoun.createdAt,
-    updatedAt: UserFoun.updatedAt,
-  });
 };
