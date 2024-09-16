@@ -1,12 +1,21 @@
-export function navigateTo(path) {
-  window.history.pushState({}, path, window.location.origin + path);
-  window.dispatchEvent(new Event("popstate"));
+// src/router.js
+import { renderLoginPage } from './pages/LoginPage.js';
+import { renderRegisterPage } from './pages/RegisterPage.js';
+import { renderTareaPage } from './pages/TareaPage.js';
+
+function router() {
+  const path = window.location.pathname;
+
+  if (path === '/') {
+    renderLoginPage();
+  } else if (path === '/register') {
+    renderRegisterPage();
+  } else if (path === '/home') {
+    renderTareaPage();
+  } else {
+    window.location.pathname = '/';
+  }
 }
 
-document.body.addEventListener("click", (e) => {
-  if (e.target.matches("a")) {
-    e.preventDefault();
-    const href = e.target.getAttribute("href");
-    navigateTo(href);
-  }
-});
+window.addEventListener('load', router);
+window.addEventListener('popstate', router);
