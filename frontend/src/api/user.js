@@ -67,3 +67,9 @@ export async function getProfile(token) {
     return {};
   }
 }
+
+export function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('profileName');
+  window.location.pathname = '/login';
+}

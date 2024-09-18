@@ -10,6 +10,7 @@ export function renderRegisterPage() {
         <input id="email" type="email" placeholder="Email" class="border p-2 mb-4 w-full" />
         <input id="password" type="password" placeholder="Contraseña" class="border p-2 mb-4 w-full" />
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Registrar</button>
+        <p class="mt-4">¿Ya tienes una cuenta? <a id="loginLink" class="text-blue-500 cursor-pointer">Inicia sesión aquí</a></p>
       </form>
     </div>
   `;
@@ -29,5 +30,9 @@ export function renderRegisterPage() {
     } else {
       Swal.fire('Error', response.message || 'Ocurrió un error', 'error');
     }
+  });
+
+  document.getElementById('loginLink').addEventListener('click', () => {
+    window.location.pathname = '/login'; // Redirige a la página de login
   });
 }

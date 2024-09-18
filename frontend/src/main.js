@@ -2,6 +2,7 @@ import './style.css';
 import { renderHomePage } from './pages/HomePage.js';
 import { renderLoginPage } from './pages/LoginPage.js';
 import { renderRegisterPage } from './pages/RegisterPage.js';
+import { renderTareaPage } from './pages/TareaPage.js'; // Importa la nueva página de tareas
 
 // Función de enrutamiento
 function router() {
@@ -15,6 +16,8 @@ function router() {
     renderLoginPage();
   } else if (path === '/home') {
     renderHomePage();
+  } else if (path === '/tareas') {
+    renderTareaPage(); // Añade la ruta para la página de tareas
   } else {
     window.location.pathname = '/';
   }
