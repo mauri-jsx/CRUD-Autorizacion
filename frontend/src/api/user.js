@@ -1,6 +1,5 @@
 const baseURL = "http://localhost:4000";
 
-// Registro de usuario
 export async function register(data) {
   try {
     const response = await fetch(`${baseURL}/register`, {
@@ -8,6 +7,7 @@ export async function register(data) {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include', // Incluir credenciales (cookies)
       body: JSON.stringify(data),
     });
 
@@ -26,12 +26,12 @@ export async function register(data) {
   }
 }
 
-// Iniciar sesión
 export async function login(data) {
   try {
     const response = await fetch(`${baseURL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(data),
     });
 
@@ -44,18 +44,16 @@ export async function login(data) {
     }
 
     const result = await response.json();
-    return { success: true, token: result.token, name: result.name }; // Asegúrate de devolver el nombre
+    return { success: true, token: result.token, name: result.name };
   } catch (error) {
     return { success: false, message: error.message || 'Error en el inicio de sesión' };
   }
 }
 
-
-// Obtener perfil de usuario
-export async function getProfile(token) {
+export async function getProfile() {
   try {
     const response = await fetch(`${baseURL}/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: 'include', // Incluir credenciales (cookies)
     });
 
     if (!response.ok) {
@@ -70,7 +68,6 @@ export async function getProfile(token) {
 }
 
 export function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('profileName');
+  document.cookie = 'token=; Max-Age=0; path=/;'; // Eliminar la cookie
   window.location.pathname = '/login';
 }

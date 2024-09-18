@@ -28,16 +28,21 @@ export function renderLoginPage() {
       return;
     }
 
-    const response = await login({ email, password });
+    try {
+      const response = await login({ email, password });
 
-    if (response.success) {
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('profileName', response.name);
-      Swal.fire('Login Exitoso', 'Redirigiendo al CRUD de tareas...', 'success').then(() => {
-        window.location.pathname = '/tareas';
-      });
-    } else {
-      Swal.fire('Error', response.message || 'Ocurrió un error', 'error');
+      if (response.success) {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('profileName', response.name);
+        console.log('Redirigiendo a /tareas');
+        Swal.fire('Login Exitoso', 'Redirigiendo al CRUD de tareas...', 'success').then(() => {
+          window.location.pathname = '/tareas';
+        });
+      } else {
+        Swal.fire('Error', response.message || 'Ocurrió un error', 'error');
+      }
+    } catch (error) {
+      Swal.fire('Error', error.message || 'Ocurrió un error', 'error');
     }
   });
 
