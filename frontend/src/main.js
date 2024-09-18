@@ -2,7 +2,7 @@ import './style.css';
 import { renderHomePage } from './pages/HomePage.js';
 import { renderLoginPage } from './pages/LoginPage.js';
 import { renderRegisterPage } from './pages/RegisterPage.js';
-import { renderTareaPage } from './pages/TareaPage.js'; // Importa la nueva página de tareas
+import { renderTareaPage } from './pages/TareaPage.js';
 
 // Función de enrutamiento
 function router() {
@@ -17,7 +17,7 @@ function router() {
   } else if (path === '/home') {
     renderHomePage();
   } else if (path === '/tareas') {
-    renderTareaPage(); // Añade la ruta para la página de tareas
+    renderTareaPage();
   } else {
     window.location.pathname = '/';
   }

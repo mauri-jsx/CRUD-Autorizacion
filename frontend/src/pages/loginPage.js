@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2';
 import { login } from '../api/user.js';
+import { loginSchema } from '../api/schemas.js';
 
 export function renderLoginPage() {
   document.body.innerHTML = `
@@ -19,13 +20,21 @@ export function renderLoginPage() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
+    // Validación con Zod
+    const validationResult = loginSchema.safeParse({ email, password });
+    if (!validationResult.success) {
+      const errorMessages = validationResult.error.errors.map(err => err.message).join('\n');
+      Swal.fire('Error', errorMessages, 'error');
+      return;
+    }
+
     const response = await login({ email, password });
 
     if (response.success) {
-      localStorage.setItem('token', response.token); // Guarda el token
-      localStorage.setItem('profileName', response.profileName); // Guarda el nombre del perfil
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('profileName', response.name);
       Swal.fire('Login Exitoso', 'Redirigiendo al CRUD de tareas...', 'success').then(() => {
-        window.location.pathname = '/tareas'; // Redirige a la página de tareas
+        window.location.pathname = '/tareas';
       });
     } else {
       Swal.fire('Error', response.message || 'Ocurrió un error', 'error');
@@ -33,6 +42,6 @@ export function renderLoginPage() {
   });
 
   document.getElementById('registerLink').addEventListener('click', () => {
-    window.location.pathname = '/register'; // Redirige a la página de registro
+    window.location.pathname = '/register';
   });
 }

@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2';
 import { register } from '../api/user.js';
+import { registerSchema } from '../api/schemas.js';
 
 export function renderRegisterPage() {
   document.body.innerHTML = `
@@ -21,11 +22,19 @@ export function renderRegisterPage() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
+    // Validación con Zod
+    const validationResult = registerSchema.safeParse({ name, email, password });
+    if (!validationResult.success) {
+      const errorMessages = validationResult.error.errors.map(err => err.message).join('\n');
+      Swal.fire('Error', errorMessages, 'error');
+      return;
+    }
+
     const response = await register({ name, email, password });
 
     if (response.success) {
       Swal.fire('Registro Exitoso', 'Redirigiendo al login...', 'success').then(() => {
-        window.location.pathname = '/login'; // Redirige al login
+        window.location.pathname = '/login';
       });
     } else {
       Swal.fire('Error', response.message || 'Ocurrió un error', 'error');
@@ -33,6 +42,6 @@ export function renderRegisterPage() {
   });
 
   document.getElementById('loginLink').addEventListener('click', () => {
-    window.location.pathname = '/login'; // Redirige a la página de login
+    window.location.pathname = '/login';
   });
 }

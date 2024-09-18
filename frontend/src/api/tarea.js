@@ -1,29 +1,58 @@
-// src/api/tareas.js
-const baseURL = 'http://localhost:4000';
+const API_URL = 'http://localhost:4000';
 
-// Crear tarea
-export async function createTarea(data, token) {
-    try {
-        const response = await fetch(`${baseURL}/tarea`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify(data),
-        });
 
-        if (!response.ok) {
-            const errorResponse = await response.json();
-            return {
-                success: false,
-                message: errorResponse.message || 'Error al crear la tarea',
-            };
+export async function getTareas() {
+    const response = await fetch(`${API_URL}/tarea`, {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
+    });
+    return response.json();
+}
 
-        const result = await response.json();
-        return { success: true, ...result };
-    } catch (error) {
-        return { success: false, message: error.message || 'Error al crear la tarea' };
-    }
+
+export async function getTareaById(id) {
+    const response = await fetch(`${API_URL}/tarea/${id}`, {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    });
+    return response.json();
+}
+
+
+export async function createTarea(tarea) {
+    const response = await fetch(`${API_URL}/tarea`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(tarea)
+    });
+    return response.json();
+}
+
+
+export async function deleteTarea(id) {
+    const response = await fetch(`${API_URL}/tarea/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+    });
+    return response.json();
+}
+
+
+export async function updateTarea(id, tarea) {
+    const response = await fetch(`${API_URL}/tarea/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(tarea)
+    });
+    return response.json();
 }

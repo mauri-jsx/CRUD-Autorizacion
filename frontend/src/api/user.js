@@ -44,11 +44,12 @@ export async function login(data) {
     }
 
     const result = await response.json();
-    return { success: true, token: result.token }; // Suponiendo que el backend devuelve un token
+    return { success: true, token: result.token, name: result.name }; // Asegúrate de devolver el nombre
   } catch (error) {
     return { success: false, message: error.message || 'Error en el inicio de sesión' };
   }
 }
+
 
 // Obtener perfil de usuario
 export async function getProfile(token) {
