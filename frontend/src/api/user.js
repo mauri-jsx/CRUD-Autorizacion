@@ -3,11 +3,11 @@ const baseURL = "http://localhost:4000";
 export async function register(data) {
   try {
     const response = await fetch(`${baseURL}/register`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include', // Incluir credenciales (cookies)
+      credentials: "include",
       body: JSON.stringify(data),
     });
 
@@ -15,23 +15,23 @@ export async function register(data) {
       const errorResponse = await response.json();
       return {
         success: false,
-        message: errorResponse.message || 'Error en el registro',
+        message: errorResponse.message || "Error en el registro",
       };
     }
 
     const result = await response.json();
-    return { success: true, token: result.token }; // Suponiendo que el backend devuelve un token
+    return { success: true, token: result.token };
   } catch (error) {
-    return { success: false, message: error.message || 'Error en el registro' };
+    return { success: false, message: error.message || "Error en el registro" };
   }
 }
 
 export async function login(data) {
   try {
     const response = await fetch(`${baseURL}/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(data),
     });
 
@@ -39,25 +39,28 @@ export async function login(data) {
       const errorResponse = await response.json();
       return {
         success: false,
-        message: errorResponse.message || 'Error en el inicio de sesión',
+        message: errorResponse.message || "Error en el inicio de sesión",
       };
     }
 
     const result = await response.json();
     return { success: true, token: result.token, name: result.name };
   } catch (error) {
-    return { success: false, message: error.message || 'Error en el inicio de sesión' };
+    return {
+      success: false,
+      message: error.message || "Error en el inicio de sesión",
+    };
   }
 }
 
 export async function getProfile() {
   try {
     const response = await fetch(`${baseURL}/profile`, {
-      credentials: 'include', // Incluir credenciales (cookies)
+      credentials: "include", // Incluir credenciales (cookies)
     });
 
     if (!response.ok) {
-      throw new Error('Error al obtener perfil');
+      throw new Error("Error al obtener perfil");
     }
 
     return await response.json();
@@ -67,7 +70,19 @@ export async function getProfile() {
   }
 }
 
-export function logout() {
-  document.cookie = 'token=; Max-Age=0; path=/;'; // Eliminar la cookie
-  window.location.pathname = '/login';
+export async function logout() {
+  try {
+    const response = await fetch(`${baseURL}/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al cerrar sesión");
+    }
+
+    window.location.pathname = "/login";
+  } catch (error) {
+    console.error("Error al cerrar sesión:", error);
+  }
 }
