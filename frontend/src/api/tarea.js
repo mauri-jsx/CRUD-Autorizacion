@@ -70,12 +70,7 @@ export async function deleteTarea(id) {
             credentials: 'include'
         });
 
-        if (!response.ok) {
-            const errorResponse = await response.json();
-            throw new Error(errorResponse.message || 'Error al eliminar la tarea');
-        }
-
-        return response.json();
+        return response;
     } catch (error) {
         console.error('Error en deleteTarea:', error);
         throw error;

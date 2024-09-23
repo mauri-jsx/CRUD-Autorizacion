@@ -95,14 +95,16 @@ export function renderTareaPage() {
           });
 
           if (result.isConfirmed) {
-            try {
-              await deleteTarea(id);
+            const response = await deleteTarea(id);
+
+            if (response.ok) {
               Swal.fire('Eliminado', 'La tarea ha sido eliminada', 'success');
               renderTareas();
-            } catch (error) {
+            } else {
               Swal.fire('Error', 'Error al eliminar la tarea', 'error');
             }
           }
+
         });
       });
     } catch (error) {
